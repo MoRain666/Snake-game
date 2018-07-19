@@ -114,11 +114,15 @@ class Game {
             const ghostTail = document.getElementById(`cell${this.snake[this.snake.length - 1]}`);
             if (this.snake[0] == this.apple) {
                 Head.classList.remove('apple');
-                ghostTail.classList.add('snake');
+                pastTail.classList.add('snake');
                 this.score++;
                 this.snake.push(this.snake[0] - stepToMove);
                 document.querySelector('#score').textContent = `Длина змейки: ${this.score}`;
                 this.initApple();
+                newHead.classList.add('snake');
+                pastTail.classList.remove('snake');
+                this.snake.unshift(this.snake[0] - stepToMove);
+                this.snake.pop();
             } else {
                 for (let i = 1; i < this.snake.length; i++) {
                     if (this.snake[0] == this.snake[i]) {
@@ -145,6 +149,7 @@ class Game {
 
 
     initGameLogic() {
+        this.motion(1, 'UP');
         let handler = (event) => {
             if (event.keyCode === KEY_UP) {
                 if (this.action != 'UP' && this.action != 'DOWN') this.motion(1, 'UP');
