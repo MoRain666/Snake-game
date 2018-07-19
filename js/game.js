@@ -76,7 +76,7 @@ class Game {
                     if (randomIndex + j == item) {
                         randomIndex = Math.floor(Math.random() * Math.pow(this.size, 2));
                     }
-                })
+                });
                 if (randomIndex == this.size * i - j || randomIndex == i * this.size - 19) {
                     randomIndex = Math.floor(Math.random() * Math.pow(this.size, 2));
                 }
@@ -94,7 +94,7 @@ class Game {
     motion(step, action) {
         let stepToMove = step;
         this.action = `${action}`;
-        let flux = setInterval(async () => {
+        let flux = setInterval(() => {
             const newHead = document.getElementById(`cell${this.snake[0] - stepToMove}`);
             const Head = document.getElementById(`cell${this.snake[0]}`);
             const pastTail = document.getElementById(`cell${this.snake[this.snake.length - 2]}`);
@@ -137,17 +137,19 @@ class Game {
     initGameLogic() {
         this.motion(1, 'UP');
         let handler = (event) => {
-            if (event.keyCode === KEY_UP) {
-                if (this.action != 'UP' && this.action != 'DOWN') this.motion(1, 'UP');
-            }
-            if (event.keyCode === KEY_RIGHT) {
-                if (this.action != 'RIGHT' && this.action != 'LEFT') this.motion(-20, 'RIGHT');
-            }
-            if (event.keyCode === KEY_DOWN) {
-                if (this.action != 'DOWN' && this.action != 'UP') this.motion(-1, 'DOWN');
-            }
-            if (event.keyCode === KEY_LEFT) {
-                if (this.action != 'LEFT' && this.action != 'RIGHT') this.motion(20, 'LEFT');
+            switch (event.keyCode) {
+                case KEY_UP:
+                    if (this.action != 'UP' && this.action != 'DOWN') this.motion(1, 'UP');
+                    break;
+                case KEY_RIGHT:
+                    if (this.action != 'RIGHT' && this.action != 'LEFT') this.motion(-20, 'RIGHT');
+                    break;
+                case KEY_DOWN:
+                    if (this.action != 'DOWN' && this.action != 'UP') this.motion(-1, 'DOWN');
+                    break;
+                case KEY_LEFT:
+                    if (this.action != 'LEFT' && this.action != 'RIGHT') this.motion(20, 'LEFT');
+                    break;
             }
         }
         this.handler = handler;
@@ -165,7 +167,7 @@ class Game {
         rootContainer.remove();
         replay.textContent = 'Play again';
         replay.addEventListener('click', () => location.reload());
-        score.textContent = `Current score: ${this.score}`;
+        score.textContent = `You lose! Current score: ${this.score}`;
         document.body.appendChild(newContainer);
         newContainer.appendChild(score);
         newContainer.appendChild(replay);
