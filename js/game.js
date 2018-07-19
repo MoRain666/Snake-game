@@ -1,11 +1,12 @@
 class Game {
 
-    constructor(fieldSize, snakeSize, speed) {
+    constructor(fieldSize, snakeSize, speed, border) {
         this.size = fieldSize;
         this.score = snakeSize;
         this.speed = speed;
         this.action = '';
         this.snake = [];
+        this.border = border;
     }
 
     initGame() {
@@ -33,24 +34,10 @@ class Game {
     }
 
     initBorder() {
-        let array = []
-        for (let i = 1; i < this.size * this.size; i += this.size) {
-            array.push(i);
-        }
-        for (let i = 2; i < this.size; i++) {
-            array.push(i)
-        }
-        for (let i = 20; i < this.size * this.size; i += this.size) {
-            array.push(i)
-        }
-        for (let i = 382; i <= this.size * this.size; i++) {
-            array.push(i)
-        }
-        array.forEach((item) => {
+        this.border.forEach((item) => {
             const cell = document.querySelector(`#cell${item}`);
             cell.classList.add('border');
         });
-        this.border = array;
     }
 
     initScore() {
@@ -74,7 +61,7 @@ class Game {
             if (randomIndex == snake) {
                 randomIndex = Math.floor(Math.random() * Math.pow(this.size, 2));
             }
-        }
+        };
         const appleContainer = document.querySelector(`#cell${randomIndex}`);
         appleContainer.classList.add('apple');
         this.apple = randomIndex;
@@ -111,7 +98,6 @@ class Game {
             const newHead = document.getElementById(`cell${this.snake[0] - stepToMove}`);
             const Head = document.getElementById(`cell${this.snake[0]}`);
             const pastTail = document.getElementById(`cell${this.snake[this.snake.length - 2]}`);
-            const ghostTail = document.getElementById(`cell${this.snake[this.snake.length - 1]}`);
             if (this.snake[0] == this.apple) {
                 Head.classList.remove('apple');
                 pastTail.classList.add('snake');
@@ -149,7 +135,7 @@ class Game {
 
 
     initGameLogic() {
-        //this.motion(1, 'UP');
+        this.motion(1, 'UP');
         let handler = (event) => {
             if (event.keyCode === KEY_UP) {
                 if (this.action != 'UP' && this.action != 'DOWN') this.motion(1, 'UP');
@@ -186,5 +172,5 @@ class Game {
     }
 
 }
-const game = new Game(FIELD_SIZE, SNAKE_SIZE, SPEED);
+const game = new Game(FIELD_SIZE, SNAKE_SIZE, SPEED, BORDER_ARRAY);
 game.initGame();
