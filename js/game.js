@@ -58,7 +58,7 @@ class Game {
         const container = document.querySelector('#root');
         score.classList.add('score');
         score.id = 'score';
-        score.textContent = `Длина змейки: ${this.score}`;
+        score.textContent = `Length of snake: ${this.score}`;
         container.appendChild(score);
     }
 
@@ -117,7 +117,7 @@ class Game {
                 pastTail.classList.add('snake');
                 this.score++;
                 this.snake.push(this.snake[0] - stepToMove);
-                document.querySelector('#score').textContent = `Длина змейки: ${this.score}`;
+                document.querySelector('#score').textContent = `Length of snake: ${this.score}`;
                 this.initApple();
                 newHead.classList.add('snake');
                 pastTail.classList.remove('snake');
@@ -149,7 +149,7 @@ class Game {
 
 
     initGameLogic() {
-        this.motion(1, 'UP');
+        //this.motion(1, 'UP');
         let handler = (event) => {
             if (event.keyCode === KEY_UP) {
                 if (this.action != 'UP' && this.action != 'DOWN') this.motion(1, 'UP');
@@ -174,17 +174,11 @@ class Game {
         const newContainer = document.createElement('div');
         const replay = document.createElement('button');
         const score = document.createElement('div');
+        newContainer.classList.add('modal-dialog');
         document.removeEventListener('keydown', this.handler);
         rootContainer.remove();
         replay.textContent = 'Play again';
-        replay.addEventListener('click', () =>{
-            newContainer.remove();
-            const newRootContainer = document.createElement('div');
-            newRootContainer.id = 'root';
-            document.body.appendChild(newRootContainer);
-            const game = new Game(FIELD_SIZE, SNAKE_SIZE, SPEED);
-            game.initGame();
-        });
+        replay.addEventListener('click', () => location.reload());
         score.textContent = `Current score: ${this.score}`;
         document.body.appendChild(newContainer);
         newContainer.appendChild(score);
