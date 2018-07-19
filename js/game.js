@@ -1,6 +1,6 @@
 class Game {
 
-    constructor(fieldSize, snakeSize, speed){
+    constructor(fieldSize, snakeSize, speed) {
         this.size = fieldSize;
         this.score = snakeSize;
         this.speed = speed;
@@ -8,7 +8,7 @@ class Game {
         this.snake = [];
     }
 
-    initGame(){
+    initGame() {
         this.initScore();
         this.initField();
         this.initBorder();
@@ -17,7 +17,7 @@ class Game {
         this.initGameLogic();
     }
 
-    initField(){
+    initField() {
         const containerForCells = document.querySelector('#root');
         for (let row = 0; row < this.size; row++) {
             const rowCell = document.createElement("div");
@@ -32,28 +32,28 @@ class Game {
         }
     }
 
-    initBorder(){
+    initBorder() {
         let array = []
-        for(let i = 1; i < this.size * this.size; i += this.size){
+        for (let i = 1; i < this.size * this.size; i += this.size) {
             array.push(i);
         }
-        for(let i = 2; i < this.size; i++){
+        for (let i = 2; i < this.size; i++) {
             array.push(i)
         }
-        for(let i = 20; i < this.size * this.size; i += this.size){
+        for (let i = 20; i < this.size * this.size; i += this.size) {
             array.push(i)
         }
-        for(let i = 382; i <= this.size * this.size; i ++){
+        for (let i = 382; i <= this.size * this.size; i++) {
             array.push(i)
         }
-        array.forEach((item) =>{
+        array.forEach((item) => {
             const cell = document.querySelector(`#cell${item}`);
             cell.classList.add('border');
         });
         this.border = array;
     }
 
-    initScore(){
+    initScore() {
         const score = document.createElement('div');
         const container = document.querySelector('#root');
         score.classList.add('score');
@@ -62,16 +62,16 @@ class Game {
         container.appendChild(score);
     }
 
-    initApple(){
+    initApple() {
         let randomIndex = Math.floor(Math.random() * Math.pow(this.size, 2));
-        for(let i = 0; i < document.getElementsByClassName('snake').length; i++){
-            let snake = eval(document.getElementsByClassName('snake')[i].id.replace(/[^0-9]/g,''));
+        for (let i = 0; i < document.getElementsByClassName('snake').length; i++) {
+            let snake = eval(document.getElementsByClassName('snake')[i].id.replace(/[^0-9]/g, ''));
             this.border.forEach((item) => {
-                if(randomIndex == item){
+                if (randomIndex == item) {
                     randomIndex = Math.floor(Math.random() * Math.pow(this.size, 2));
                 }
             });
-            if(randomIndex == snake){
+            if (randomIndex == snake) {
                 randomIndex = Math.floor(Math.random() * Math.pow(this.size, 2));
             }
         }
@@ -80,13 +80,13 @@ class Game {
         this.apple = randomIndex;
     }
 
-    initSnake(){
+    initSnake() {
         let currentSize = this.score;
         let randomIndex = Math.floor(Math.random() * Math.pow(this.size, 2));
-        for(let i = 1; i <= this.size; i++){
-            for(let j = 1; j < this.score; j++){
+        for (let i = 1; i <= this.size; i++) {
+            for (let j = 1; j < this.score; j++) {
                 this.border.forEach((item) => {
-                    if(randomIndex + j == item){
+                    if (randomIndex + j == item) {
                         randomIndex = Math.floor(Math.random() * Math.pow(this.size, 2));
                     }
                 })
@@ -95,7 +95,7 @@ class Game {
                 }
             }
         }
-        for(let i = 0; i < currentSize; i++){
+        for (let i = 0; i < currentSize; i++) {
             const snakeContainer = document.querySelector(`#cell${randomIndex + i}`);
             snakeContainer.classList.add('snake');
             this.snake.push(randomIndex + i);
@@ -103,56 +103,87 @@ class Game {
         this.snake.push(randomIndex + currentSize);
     }
 
-    initGameLogic(){
-        document.addEventListener("keydown", (event) => {
-            if(event.keyCode === KEY_UP) {
-                if(this.action != 'UP' && this.action != 'DOWN') this.motion(1, 'UP');
-            }
-            if(event.keyCode === KEY_RIGHT) {
-                if(this.action != 'RIGHT' && this.action != 'LEFT') this.motion(-20, 'RIGHT');
-            }
-            if(event.keyCode === KEY_DOWN) {
-                if(this.action != 'DOWN' && this.action != 'UP') this.motion(-1, 'DOWN');
-            }
-            if(event.keyCode === KEY_LEFT) {
-                if(this.action != 'LEFT' && this.action != 'RIGHT') this.motion(20, 'LEFT');
-            }
-        });
-        
-    }
 
-    motion(step, action){
+    motion(step, action) {
         let stepToMove = step;
         this.action = `${action}`;
-        let flux = setInterval(() =>{
-        const newHead = document.getElementById(`cell${this.snake[0] - stepToMove}`);
-        const pastTailId = this.snake[this.snake.length - 2];
-        const pastHead = document.getElementById(`cell${this.snake[1] - stepToMove}`);
-        const pastTail = document.getElementById(`cell${this.snake[this.snake.length - 2]}`);
-        const ghostTail = document.getElementById(`cell${this.snake[this.snake.length - 1]}`);
-        if(pastTailId == this.apple){
-            pastTail.classList.remove('apple');
-            ghostTail.classList.add('snake');
-            this.snake.push(this.snake[0] - stepToMove);
-            document.querySelector('#score').textContent =`Длина змейки: ${this.score}`;
-            this.score++;
-            this.initApple();
-        }else{
-            newHead.classList.add('snake');
-            pastTail.classList.remove('snake');
-            this.snake.unshift(this.snake[0] - stepToMove);
-            this.snake.pop();
-        }
-        if(this.action != `${action}`){
-            clearInterval(flux);
-        }
-        for(let i = 0; i < this.border.length; i++){
-            if(this.snake[0] == this.border[i]){
+        let flux = setInterval(async () => {
+            const newHead = document.getElementById(`cell${this.snake[0] - stepToMove}`);
+            const Head = document.getElementById(`cell${this.snake[0]}`);
+            const pastTail = document.getElementById(`cell${this.snake[this.snake.length - 2]}`);
+            const ghostTail = document.getElementById(`cell${this.snake[this.snake.length - 1]}`);
+            if (this.snake[0] == this.apple) {
+                Head.classList.remove('apple');
+                ghostTail.classList.add('snake');
+                this.score++;
+                this.snake.push(this.snake[0] - stepToMove);
+                document.querySelector('#score').textContent = `Длина змейки: ${this.score}`;
+                this.initApple();
+            } else {
+                for (let i = 1; i < this.snake.length; i++) {
+                    if (this.snake[0] == this.snake[i]) {
+                        this.endOfGame();
+                        clearInterval(flux);
+                    }
+                }
+                newHead.classList.add('snake');
+                pastTail.classList.remove('snake');
+                this.snake.unshift(this.snake[0] - stepToMove);
+                this.snake.pop();
+            }
+            if (this.action != `${action}`) {
                 clearInterval(flux);
-                alert('game over!');
+            }
+            for (let i = 0; i < this.border.length; i++) {
+                if (this.snake[0] == this.border[i]) {
+                    clearInterval(flux);
+                    this.endOfGame();
+                }
+            }
+        }, this.speed)
+    }
+
+
+    initGameLogic() {
+        let handler = (event) => {
+            if (event.keyCode === KEY_UP) {
+                if (this.action != 'UP' && this.action != 'DOWN') this.motion(1, 'UP');
+            }
+            if (event.keyCode === KEY_RIGHT) {
+                if (this.action != 'RIGHT' && this.action != 'LEFT') this.motion(-20, 'RIGHT');
+            }
+            if (event.keyCode === KEY_DOWN) {
+                if (this.action != 'DOWN' && this.action != 'UP') this.motion(-1, 'DOWN');
+            }
+            if (event.keyCode === KEY_LEFT) {
+                if (this.action != 'LEFT' && this.action != 'RIGHT') this.motion(20, 'LEFT');
             }
         }
-        }, this.speed)
+        this.handler = handler;
+        document.addEventListener("keydown", handler);
+    }
+
+
+    endOfGame() {
+        const rootContainer = document.querySelector('#root');
+        const newContainer = document.createElement('div');
+        const replay = document.createElement('button');
+        const score = document.createElement('div');
+        document.removeEventListener('keydown', this.handler);
+        rootContainer.remove();
+        replay.textContent = 'Play again';
+        replay.addEventListener('click', () =>{
+            newContainer.remove();
+            const newRootContainer = document.createElement('div');
+            newRootContainer.id = 'root';
+            document.body.appendChild(newRootContainer);
+            const game = new Game(FIELD_SIZE, SNAKE_SIZE, SPEED);
+            game.initGame();
+        });
+        score.textContent = `Current score: ${this.score}`;
+        document.body.appendChild(newContainer);
+        newContainer.appendChild(score);
+        newContainer.appendChild(replay);
     }
 
 }
